@@ -9,9 +9,31 @@
 'use strict';
 
 var expect = require('chai').expect;
-var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
 const MONGODB_CONNECTION_STRING = process.env.DB;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+mongoose.set('useFindAndModify', false);
+
+
+const CONNECTION_STRING = process.env.DB; 
+//connect to database using mongoose
+mongoose.connect(CONNECTION_STRING)
+//from quick start guide in mongoose docs
+let db = mongoose.connection;
+db.on("error", console.error.bind(console, 'connection error'));
+db.once('open', function (){
+  console.log("DB sucess using mongoose!")
+});
+
+//issue schema and model
+const stockSchema = new Schema({
+  stock: {type: String, required: true},
+  likes: {type: Number},
+  IP: [String]
+});
+
+const Stock = mongoose.model('Stock', stockSchema);
 //Example connection: MongoClient.connect(MONGODB_CONNECTION_STRING, function(err, db) {});
 
 module.exports = function (app) {

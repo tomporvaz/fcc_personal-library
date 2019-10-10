@@ -17,6 +17,16 @@ app.use(cors({origin: '*'})); //USED FOR FCC TESTING PURPOSES ONLY!
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives:{
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'"]
+    }
+  }
+}));
+
+
 //Index page (static HTML)
 app.route('/')
   .get(function (req, res) {
