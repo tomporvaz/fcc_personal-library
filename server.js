@@ -19,12 +19,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives:{
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'"]
-    }
-  }
+  noCache: true,
+  hidePoweredBy: { setTo: 'PHP 4.2.0' }
 }));
 
 
