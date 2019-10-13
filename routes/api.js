@@ -35,64 +35,69 @@ const Book = mongoose.model('Book', bookSchema);
 //Example connection: MongoClient.connect(MONGODB_CONNECTION_STRING, function(err, db) {});
 
 module.exports = function (app) {
-
+  
   app.route('/api/books')
-    .get(function (req, res){
-      //response will be array of book objects
-      //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
-      Book.find(function(err, books){
-        if(err){console.error(err)};
-        //count comments and build response objects in array with map
-        const newArrayOfBooks = books.map(book => {
-          return {
-            _id: book._id,
-            title: book.title,
-            commentcount: book.comments.length
-          }
-        })
-        res.json(newArrayOfBooks);
+  .get(function (req, res){
+    //response will be array of book objects
+    //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
+    Book.find(function(err, books){
+      if(err){console.error(err)};
+      //count comments and build response objects in array with map
+      const newArrayOfBooks = books.map(book => {
+        return {
+          _id: book._id,
+          title: book.title,
+          commentcount: book.comments.length
+        }
       })
+      res.json(newArrayOfBooks);
     })
+  })
+  
+  .post(function (req, res){
+    //response will contain new book object including atleast _id and title
+    const book = new Book({title: req.body.title});
     
-    .post(function (req, res){
-      //response will contain new book object including atleast _id and title
-      const book = new Book({title: req.body.title});
-
+    //enter logic to handle when POST logic does not have a title
+    if(book.title){
       book.save(function(err, savedBook){
         if(err){console.error(err)};
         res.json(savedBook)
       });
-    })
-    
-    .delete(function(req, res){
-      //if successful response will be 'complete delete successful'
-    });
-
-
-
+    } else if(!book.title){
+      res.body('missing title');
+    }
+  })
+  
+  .delete(function(req, res){
+    //if successful response will be 'complete delete successful'
+  });
+  
+  
+  
   app.route('/api/books/:id')
-    .get(function (req, res){
-      var bookid = req.params.id;
-      //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
+  .get(function (req, res){
+    var bookid = req.params.id;
+    //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
+  })
+  
+  .post(function(req, res){
+    var bookId = req.params.id;
+    var comment = req.body.comment;
+    //json res format same as .get
+    Book.findById(bookId)
+    .then(returnedBook => {
+      returnedBook.comments.push(comment);
+      return returnedBook;
     })
-    
-    .post(function(req, res){
-      var bookId = req.params.id;
-      var comment = req.body.comment;
-      //json res format same as .get
-      Book.findById(bookId)
-      .then(returnedBook => {
-        returnedBook.comments.push(comment);
-        return returnedBook;
-      })
-      .then(updatedBook => updatedBook.save())
-      .then(savedBook => res.json(savedBook))
-      .catch(err => console.error(err));
-    })
-    
-    .delete(function(req, res){
-      var bookid = req.params.id;
-      //if successful response will be 'delete successful'
-    });
+    .then(updatedBook => updatedBook.save())
+    .then(savedBook => res.json(savedBook))
+    .catch(err => console.error(err));
+  })
+  
+  .delete(function(req, res){
+    var bookid = req.params.id;
+    //if successful response will be 'delete successful'
+  });
   
 };
