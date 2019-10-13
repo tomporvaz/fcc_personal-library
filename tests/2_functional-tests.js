@@ -44,7 +44,7 @@ suite('Functional Tests', function() {
       test('Test POST /api/books with title', function(done) {
         chai.request(server)
         .post('/api/books')
-        .query({title: `Tom's Book of Stories`})
+        .send({title: `Tom's Book of Stories`})
         .end(function(err, res){
           testBookId = res.body._id;
           assert.equal(res.status, 200);
@@ -55,13 +55,14 @@ suite('Functional Tests', function() {
           assert.property(res.body, '_id');
           done();
         });
+      });
         
         test('Test POST /api/books with no title given', function(done) {
           chai.request(server)
           .post('/api/books')
           .end(function(err, res){
             assert.equal(res.status, 200);
-            assert.equal(res.body, "Missing title");
+            assert.equal(res.body, "missing title");
             done();
           })
         });
