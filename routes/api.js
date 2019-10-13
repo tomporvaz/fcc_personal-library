@@ -31,7 +31,7 @@ const bookSchema = new Schema({
   comments: [String]
 });
 
-const Book = mongoose.model('Book', stockSchema);
+const Book = mongoose.model('Book', bookSchema);
 //Example connection: MongoClient.connect(MONGODB_CONNECTION_STRING, function(err, db) {});
 
 module.exports = function (app) {
@@ -77,7 +77,7 @@ module.exports = function (app) {
     })
     
     .post(function(req, res){
-      var bookid = req.params.id;
+      var bookId = req.params.id;
       var comment = req.body.comment;
       //json res format same as .get
       Book.findById(bookId)
@@ -86,6 +86,7 @@ module.exports = function (app) {
         return returnedBook;
       })
       .then(updatedBook => updatedBook.save())
+      .then(savedBook => res.json(savedBook))
       .catch(err => console.error(err));
     })
     
