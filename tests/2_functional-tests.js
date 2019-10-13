@@ -62,7 +62,7 @@ suite('Functional Tests', function() {
           .post('/api/books')
           .end(function(err, res){
             assert.equal(res.status, 200);
-            assert.equal(res.body, "missing title");
+            assert.equal(res.text, "missing title");
             done();
           })
         });
@@ -95,7 +95,7 @@ suite('Functional Tests', function() {
           .get(`/api/books/5da22b49dc8265007daed36d`)
           .end(function(err, res){
             assert.equal(res.status, 200);
-            assert.equal(res.body, 'no book exists')
+            assert.equal(res.text, 'no book exists')
             done();
           })
         });
@@ -123,7 +123,7 @@ suite('Functional Tests', function() {
         test('Test POST /api/books/[id] with comment', function(done){
           chai.request(server)
           .post(`/api/books/${testBookId}`)
-          .query(`Silly bear, tests are for routes!`)
+          .send({comment: `Silly bear, tests are for routes!`})
           .end(function(err, res){
             assert.equal(res.status, 200);
             assert.property(res.body, '_id');
@@ -142,4 +142,3 @@ suite('Functional Tests', function() {
     });
     
   });
-});

@@ -65,7 +65,7 @@ module.exports = function (app) {
         res.json(savedBook)
       });
     } else if(!book.title){
-      res.body('missing title');
+      res.send('missing title');
     }
   })
   
