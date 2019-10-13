@@ -77,8 +77,16 @@ module.exports = function (app) {
   
   app.route('/api/books/:id')
   .get(function (req, res){
-    var bookid = req.params.id;
+    var bookId = req.params.id;
     //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
+    Book.findById(bookId)
+    .then(returnedBook => {
+      return {
+        _id: returnedBook._id,
+        title: returnedBook.title,
+        comments: returnedBook.comments
+      }
+    })
   })
   
   .post(function(req, res){
