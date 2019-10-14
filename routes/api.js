@@ -115,8 +115,11 @@ module.exports = function (app) {
   })
   
   .delete(function(req, res){
-    var bookid = req.params.id;
+    var bookId = req.params.id;
     //if successful response will be 'delete successful'
+    Book.findByIdAndDelete(bookId)
+    .then(res.send('delete successful'))
+    .catch(err => console.error(err));
   });
   
 };
