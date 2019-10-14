@@ -81,20 +81,20 @@ module.exports = function (app) {
     console.log(bookId);
     //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
     
-    if(req.params.id){
-      Book.findById(bookId)
-      .then(returnedBook => {
+    Book.findById(bookId)
+    .then(returnedBook => {
+      if(returnedBook){
         let newBook =  {
           _id: returnedBook._id,
           title: returnedBook.title,
           comments: returnedBook.comments
         }
         res.json(newBook);
-      })
-      .catch(err => console.error(err));
-    } else if(!req.params.id){
-      res.send('no book exists');
-    }
+      } else if(!returnedBook){
+        res.send('no book exists');
+      }
+    })
+    .catch(err => console.error(err));
   })
   
   .post(function(req, res){
